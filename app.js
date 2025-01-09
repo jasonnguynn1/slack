@@ -98,6 +98,29 @@ schedule.scheduleJob("00 15 * * *", async () => {
   }
 });
 
+schedule.scheduleJob("00 18 * * *", async () => {
+  try {
+    const response = await client.conversations.list({
+      types: "public_channel, private_channel",
+    });
+    console.log(response);
+    const channel = response.channels.find(
+      (channel) => channel.name === "nông-trại"
+    );
+
+    if (channel.id) {
+      await app.client.chat.postMessage({
+        token: process.env.SLACK_BOT_TOKEN,
+        channel: channel.id,
+        text: "VỀ ĐÊ!",
+      });
+      console.log("Đã gửi tin nhắn tự động thành công!");
+    }
+  } catch (error) {
+    console.error("Lỗi khi gửi tin nhắn tự động:", error);
+  }
+});
+
 schedule.scheduleJob("00 10 * * *", async () => {
   try {
     const response = await client.conversations.list({
