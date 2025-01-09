@@ -94,6 +94,7 @@ lunchTime.tz = 'Asia/Ho_Chi_Minh';
 lunchTime.second = 0;
 lunchTime.minute = 30;
 lunchTime.hour = 12;
+lunchTime.dayOfWeek = [new schedule.Range(1, 5)]; 
 schedule.scheduleJob(lunchTime, async () => {
   try {
     const response = await client.conversations.list({
@@ -123,6 +124,7 @@ coffeeTime.tz = 'Asia/Ho_Chi_Minh';
 coffeeTime.second = 0;
 coffeeTime.minute = 0;
 coffeeTime.hour = 15;
+coffeeTime.dayOfWeek = [new schedule.Range(1, 5)]; 
 schedule.scheduleJob(coffeeTime, async () => {
   try {
     const response = await client.conversations.list({
@@ -152,6 +154,7 @@ leaveTime.tz = 'Asia/Ho_Chi_Minh';
 leaveTime.second = 0;
 leaveTime.minute = 0;
 leaveTime.hour = 18;
+leaveTime.dayOfWeek = [new schedule.Range(1, 5)]; 
 schedule.scheduleJob(leaveTime, async () => {
   try {
     const response = await client.conversations.list({
@@ -182,7 +185,7 @@ startTime.tz = 'Asia/Ho_Chi_Minh';
 startTime.second = 0;
 startTime.minute = 0;
 startTime.hour = 10;
-
+startTime.dayOfWeek = [new schedule.Range(1, 5)]; 
 schedule.scheduleJob(startTime, async () => {
   try {
     const response = await client.conversations.list({
