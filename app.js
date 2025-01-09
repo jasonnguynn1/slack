@@ -2,10 +2,15 @@ require("dotenv").config();
 const { App } = require("@slack/bolt");
 const { WebClient } = require("@slack/web-api");
 const schedule = require("node-schedule");
+const { OpenAI } = require('openai');
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN, // Bot Token từ Slack
   signingSecret: process.env.SLACK_SIGNING_SECRET, // Signing Secret từ Slack
+});
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 const client = new WebClient(process.env.SLACK_BOT_TOKEN);
@@ -25,6 +30,29 @@ const client = new WebClient(process.env.SLACK_BOT_TOKEN);
 //   }, delayInMs);
 // };
 
+app.command('/askbot', async ({ command, ack, respond, say }) => {
+  try {
+    await ack();
+
+    const userMessage = command.text;
+    const userId = command.user_id;
+
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: userMessage }],
+    });
+
+    // await respond({
+    //   text: response.choices[0].message.content,
+    // });
+    const replyText = `<@${userId}> Câu hỏi của bạn: ${userMessage}\n*Bot trả lời*: ${response.choices[0].message.content}`;
+
+    await say(replyText);
+  } catch (err) {
+    console.log("Error:", err);
+  }
+});
+
 app.message("hello", async ({ message, say }) => {
   try {
     const info = await client.users.list();
@@ -35,7 +63,7 @@ app.message("hello", async ({ message, say }) => {
     );
   
     if (user?.id && message.text.includes(`<@${user.id}>`)) {
-      await say(`Chào, <@${message.user}>! Chúc bạn có một ngày tốt lành`);
+      await say(`Chào, <@${message.user}>! Chúc bạn một ngày bão tố =)))`);
     }
   } catch (err) {
     console.log("Error:", err);
@@ -60,8 +88,13 @@ app.message("hello", async ({ message, say }) => {
 //     }
 //   }
 // });
+let lunchTime = new schedule.RecurrenceRule();
 
-schedule.scheduleJob("30 12 * * *", async () => {
+lunchTime.tz = 'Asia/Ho_Chi_Minh';
+lunchTime.second = 0;
+lunchTime.minute = 30;
+lunchTime.hour = 12;
+schedule.scheduleJob(lunchTime, async () => {
   try {
     const response = await client.conversations.list({
       types: "public_channel, private_channel",
@@ -84,7 +117,13 @@ schedule.scheduleJob("30 12 * * *", async () => {
   }
 });
 
-schedule.scheduleJob("00 15 * * *", async () => {
+let coffeeTime = new schedule.RecurrenceRule();
+
+coffeeTime.tz = 'Asia/Ho_Chi_Minh';
+coffeeTime.second = 0;
+coffeeTime.minute = 0;
+coffeeTime.hour = 15;
+schedule.scheduleJob(coffeeTime, async () => {
   try {
     const response = await client.conversations.list({
       types: "public_channel, private_channel",
@@ -107,7 +146,13 @@ schedule.scheduleJob("00 15 * * *", async () => {
   }
 });
 
-schedule.scheduleJob("00 18 * * *", async () => {
+let leaveTime = new schedule.RecurrenceRule();
+
+leaveTime.tz = 'Asia/Ho_Chi_Minh';
+leaveTime.second = 0;
+leaveTime.minute = 0;
+leaveTime.hour = 18;
+schedule.scheduleJob(leaveTime, async () => {
   try {
     const response = await client.conversations.list({
       types: "public_channel, private_channel",
@@ -130,7 +175,15 @@ schedule.scheduleJob("00 18 * * *", async () => {
   }
 });
 
-schedule.scheduleJob("00 10 * * *", async () => {
+
+let startTime = new schedule.RecurrenceRule();
+
+startTime.tz = 'Asia/Ho_Chi_Minh';
+startTime.second = 0;
+startTime.minute = 0;
+startTime.hour = 10;
+
+schedule.scheduleJob(startTime, async () => {
   try {
     const response = await client.conversations.list({
       types: "public_channel, private_channel",
